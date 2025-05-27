@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario de Entrenamiento 2026</title>
+    <style>
+        :root {
+            --color-bg: #f0f2f5;
+            --color-text: #333;
+            --color-header: #fff;
+            --color-day: #fff;
+            --color-day-hover: #e9e9e9;
+            --color-today: #d6eaff;
+            --color-checked: #c8e6c9;
+            --color-modal-bg: rgba(0,0,0,0.6);
+            --border-radius: 8px;
+            --shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            margin: 0;
+            padding: 15px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        h1 {
+            text-align: center;
+            color: #1a73e8;
+            font-size: 1.5em;
+        }
+        .month {
+            margin-bottom: 2em;
+        }
+        .month h2 {
+            text-align: center;
+            background-color: #1a73e8;
+            color: white;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+        .day-header {
+            font-weight: bold;
+            text-align: center;
+            padding: 5px;
+            font-size: 0.8em;
+        }
+        .day {
+            position: relative;
+            background-color: var(--color-day);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            aspect-ratio: 1 / 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .day:hover {
+            background-color: var(--color-day-hover);
+        }
+        .day.checked {
+            background-color: var(--color-checked);
+            color: #255d28;
+        }
+        .day .day-number {
+            pointer-events: none; /* Evita que el número intercepte el clic */
+            z-index: 1; /* Asegura que el número esté sobre el checkbox si hay solapamiento */
+        }
+        .empty-day {
+            background: none;
+            box-shadow: none;
+            cursor: default;
+        }
+        /* --- AJUSTE CLAVE AQUÍ --- */
+        .day .checkbox {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            transform: scale(1.2); /* Reducido para no ocupar tanto espacio */
+            margin: 0;
+            z-index: 2; /* El checkbox está "encima" para poder ser pulsado */
+            opacity: 0.8; /* Lo hacemos un poco transparente para que no sea tan pesado visualmente */
+        }
+        .day.checked .checkbox {
+            opacity: 1;
+        }
+        /* --- FIN DEL AJUSTE --- */
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: var(--color-modal-bg);
+            animation: fadeIn 0.3s;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 25% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 500px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .modal-header h3 {
+            margin: 0;
+            color: #1a73e8;
+        }
+        .close-button {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .modal-body ul {
+            padding-left: 20px;
+        }
+        .modal-body li {
+            margin-bottom: 0.5em;
+        }
+        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+        @keyframes slideIn { from {transform: translateY(-50px);} to {transform: translateY(0);} }
+    </style>
+</head>
+<body>
+
+    <h1>🏋️‍♂️ Calendario de Entrenamiento 2026 🏋️‍♀️</h1>
+    <p style="text-align:center; font-size: 0.9em; color: #666;">Toca un día para ver el plan. Marca la casilla para guardar tu progreso.</p>
+
+    <div id="calendar-container"></div>
+
+    <div id="training-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title"></h3>
+                <span class="close-button">&times;</span>
+            </div>
+            <div id="modal-body" class="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarContainer = document.getElementById('calendar-container');
+            const modal = document.getElementById('training-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+            const closeButton = document.querySelector('.close-button');
+            const year = 2026;
+
+            // --- ¡IMPORTANTE! PEGA AQUÍ LA URL DE TU APLICACIÓN WEB DE APPS SCRIPT ---
+            const APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyZtQjbOINoZCm0KHyGcw2Nwf9qhrKmh4aqkL-g_iDiB9IIchNarAZlwg0yEDYQQUXVZA/exec'; // Tu URL
+            // -------------------------------------------------------------------------
+
+            let checkedDates = {}; // Aquí almacenaremos los datos de fechas marcadas de Google Sheets
+
+            const trainingPlan = {
+                1: { title: "Lunes - Cuerpo completo (fuerza + cardio)", plan: `<strong>Calentamiento (5 min):</strong> jumping jacks, movilidad articular.<br><br><strong>Circuito (3 vueltas, 30 seg trabajo/15 seg descanso):</strong><ul><li>Sentadillas con mancuernas</li><li>Flexiones (sobre rodillas si es necesario)</li><li>Remo con mancuernas</li><li>Plancha (30 seg)</li><li>Shadow boxing (sincroniza brazos y piernas, alta intensidad)</li></ul><strong>Estiramientos (5 min)</strong>`},
+                2: { title: "Martes - Tren inferior + core", plan: `<strong>Calentamiento (5 min):</strong> skipping bajo + rotaciones cadera.<br><br><strong>Ejercicios (3 series):</strong><ul><li>Zancadas con mancuernas (12 x pierna)</li><li>Puente de glúteos (15 rep)</li><li>Sentadilla isométrica (30 seg)</li><li>Crunches (20 rep)</li><li>Plancha lateral (30 seg/lado)</li></ul><strong>Estiramientos (5 min)</strong>`},
+                3: { title: "Miércoles - Cardio HIIT suave", plan: `<strong>Calentamiento (5 min):</strong> movilidad + marcha en el sitio.<br><br><strong>HIIT (4 vueltas, 30 seg ON / 30 seg OFF):</strong><ul><li>High knees</li><li>Mountain climbers</li><li>Jumping jacks</li><li>Shadow boxing</li></ul><strong>Vuelta a la calma + estiramientos (5-10 min)</strong>`},
+                4: { title: "Jueves - Tren superior (fuerza)", plan: `<strong>Calentamiento (5 min):</strong> movilidad hombros y brazos.<br><br><strong>Ejercicios (3 series):</strong><ul><li>Curl bíceps con mancuernas (12 rep)</li><li>Press de hombros con mancuernas (12 rep)</li><li>Fondos en silla (10-15 rep)</li><li>Pájaros (deltoides posterior) con mancuernas</li><li>Plancha (40 seg)</li></ul><strong>Estiramientos</strong>`},
+                5: { title: "Viernes - Circuito cuerpo completo dinámico", plan: `<strong>Circuito (4 vueltas, 40 seg trabajo/20 seg descanso):</strong><ul><li>Sentadilla + press con mancuernas</li><li>Zancadas alternas</li><li>Remo renegado</li><li>Plancha + toque de hombros</li><li>Escalador</li></ul><strong>Estiramientos</strong>`},
+                6: { title: "Sábado - Caminata o Bici", plan: "Caminata rápida o paseo en bici (mínimo 45 min)."},
+                0: { title: "Domingo - Descanso o Yoga", plan: "Descanso o yoga/estiramientos guiados (20-30 min)."}
+            };
+
+            // Función asíncrona para obtener las fechas marcadas de Google Sheet
+            async function fetchCheckedDates() {
+                try {
+                    const response = await fetch(APPS_SCRIPT_WEB_APP_URL);
+                    if (!response.ok) {
+                        throw new Error(`Error HTTP! estado: ${response.status}`);
+                    }
+                    checkedDates = await response.json();
+                    console.log('Fechas marcadas obtenidas:', checkedDates);
+                } catch (error) {
+                    console.error('Error al obtener las fechas marcadas:', error);
+                    alert('No se pudo cargar el progreso. Revisa tu conexión o la configuración del backend.');
+                    checkedDates = {}; // Asegura que sea un objeto vacío si falla la carga
+                }
+            }
+
+            // Función asíncrona para actualizar una fecha en Google Sheet
+            async function updateCheckedDate(dateId, isChecked) {
+                try {
+                    const response = await fetch(APPS_SCRIPT_WEB_APP_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ dateId: dateId, isChecked: isChecked }),
+                    });
+                    if (!response.ok) {
+                        throw new Error(`Error HTTP! estado: ${response.status}`);
+                    }
+                    const result = await response.json();
+                    console.log('Resultado de la actualización:', result);
+                    checkedDates[dateId] = isChecked; // Actualiza el caché local
+                } catch (error) {
+                    console.error('Error al actualizar la fecha marcada:', error);
+                    // Si falla la actualización, revertir el cambio en la interfaz de usuario
+                    const dayDiv = document.querySelector(`.day[data-date="${dateId}"]`);
+                    if (dayDiv) {
+                        const checkbox = dayDiv.querySelector('.checkbox');
+                        checkbox.checked = !isChecked; // Revertir el estado del checkbox
+                        dayDiv.classList.toggle('checked', !isChecked); // Revertir el estilo
+                    }
+                    alert('Error al guardar el progreso en el servidor. Inténtalo de nuevo.');
+                }
+            }
+
+            async function generateCalendar() {
+                await fetchCheckedDates(); // Espera a que se obtengan los datos antes de generar el calendario
+
+                const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+                let html = '';
+                const today = new Date();
+                // Ajuste para la fecha actual para 2026
+                const todayId = today.getFullYear() === year ? `${year}-${today.getMonth() + 1}-${today.getDate()}` : null;
+
+                for (let month = 0; month < 12; month++) {
+                    html += `<div class="month"><h2>${monthNames[month]} ${year}</h2><div class="calendar">`;
+                    const weekDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+                    weekDays.forEach(day => { html += `<div class="day-header">${day}</div>`; });
+
+                    const daysInMonth = new Date(year, month + 1, 0).getDate();
+                    let firstDay = new Date(year, month, 1).getDay(); // 0 es Domingo, 1 es Lunes...
+                    firstDay = (firstDay === 0) ? 6 : firstDay - 1; // Ajusta para que la semana empiece el Lunes
+
+                    for (let i = 0; i < firstDay; i++) { html += `<div class="empty-day"></div>`; }
+
+                    for (let day = 1; day <= daysInMonth; day++) {
+                        const date = new Date(year, month, day);
+                        const dayOfWeek = date.getDay(); // 0 para Domingo, 1 para Lunes...
+                        // CORREGIDO: Uso correcto de template literals para dateId
+                        const dateId = `${year}-${month + 1}-${day}`; // Formato: 2026-1-15
+                        const isChecked = checkedDates[dateId] || false; // Comprueba si está en los datos obtenidos
+
+                        let dayClass = 'day';
+                        if (isChecked) dayClass += ' checked';
+                        if (dateId === todayId) dayClass += ' today';
+
+                        // CORREGIDO: Uso correcto de template literals para el HTML del día
+                        html += `
+                            <div class="${dayClass}" data-date="${dateId}" data-day-of-week="${dayOfWeek}">
+                                <span class="day-number">${day}</span>
+                                <input type="checkbox" class="checkbox" ${isChecked ? 'checked' : ''}>
+                            </div>
+                        `;
+                    }
+                    html += `</div></div>`; // Cierra el div.calendar y div.month
+                }
+                calendarContainer.innerHTML = html;
+            }
+
+            function handleDayClick(e) {
+                // Solo abre el modal si se hizo clic directamente en el div del día, no en la casilla de verificación
+                if (e.target.classList.contains('day')) {
+                    const dayOfWeek = e.target.dataset.dayOfWeek;
+                    const plan = trainingPlan[dayOfWeek];
+                    modalTitle.textContent = plan.title;
+                    modalBody.innerHTML = plan.plan;
+                    modal.style.display = 'block';
+                }
+            }
+
+            function handleCheckboxClick(e) {
+                if (e.target.classList.contains('checkbox')) {
+                    e.stopPropagation(); // Evita que se dispare el evento de clic del día
+                    const dayDiv = e.target.parentElement;
+                    const dateId = dayDiv.dataset.date;
+                    const isChecked = e.target.checked;
+
+                    // Actualiza la interfaz de usuario inmediatamente (actualización optimista)
+                    dayDiv.classList.toggle('checked', isChecked);
+
+                    // Envía la actualización a Google Sheet
+                    updateCheckedDate(dateId, isChecked);
+                }
+            }
+
+            closeButton.onclick = () => modal.style.display = 'none';
+            window.onclick = (e) => {
+                if (e.target == modal) { modal.style.display = 'none'; }
+            };
+
+            // Llama a la función asíncrona para iniciar todo
+            generateCalendar();
+            
+            calendarContainer.addEventListener('click', handleDayClick);
+            calendarContainer.addEventListener('click', handleCheckboxClick);
+        });
+    </script>
+</body>
+</html>
