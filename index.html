@@ -208,32 +208,45 @@
 
             // Función asíncrona para actualizar una fecha en Google Sheet
             async function updateCheckedDate(dateId, isChecked) {
-                try {
-                    const response = await fetch(APPS_SCRIPT_WEB_APP_URL, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ dateId: dateId, isChecked: isChecked }),
-                    });
-                    if (!response.ok) {
-                        throw new Error(`Error HTTP! estado: ${response.status}`);
-                    }
-                    const result = await response.json();
-                    console.log('Resultado de la actualización:', result);
-                    checkedDates[dateId] = isChecked; // Actualiza el caché local
-                } catch (error) {
-                    console.error('Error al actualizar la fecha marcada:', error);
-                    // Si falla la actualización, revertir el cambio en la interfaz de usuario
-                    const dayDiv = document.querySelector(`.day[data-date="${dateId}"]`);
-                    if (dayDiv) {
-                        const checkbox = dayDiv.querySelector('.checkbox');
-                        checkbox.checked = !isChecked; // Revertir el estado del checkbox
-                        dayDiv.classList.toggle('checked', !isChecked); // Revertir el estilo
-                    }
-                    alert('Error al guardar el progreso en el servidor. Inténtalo de nuevo.');
-                }
-            }
+    try {
+        const response = await fetch(APPS_SCRIPT_WEB_APP_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain;charset=utf-8' // <-- ¡CAMBIA ESTO!
+            },
+            body: JSON.stringify({ dateId: dateId, isChecked: isChecked }) // <-- El body sigue siendo JSON stringificado
+        });
+
+        // Si Google Apps Script responde con una redirección (algo común para algunas APIs),
+        // es importante que fetch la siga. Añadir 'redirect: "follow"' puede ser útil,
+        // aunque suele ser el comportamiento por defecto.
+        // Si después de esto sigues con errores, pruebalo:
+        // const response = await fetch(APPS_SCRIPT_WEB_APP_URL, {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'text/plain;charset=utf-8'
+        //     },
+        //     body: JSON.stringify({ dateId: dateId, isChecked: isChecked }),
+        //     redirect: "follow" // <-- OPCIONAL, AÑADIR SI SIGUE FALLANDO
+        // });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+        }
+        const data = await response.json(); // Tu script sigue enviando JSON como respuesta
+        console.log('Respuesta de Apps Script:', data);
+        return data; // O lo que necesites devolver
+    } catch (error) {
+        console.error('Error al actualizar la fecha marcada:', error);
+        // Aquí puedes añadir lógica para revertir el estado del checkbox si la actualización falla
+        // Por ejemplo, buscar el checkbox y desmarcarlo
+        const checkbox = document.querySelector(`.day[data-date-id="${dateId}"] .checkbox`);
+        if (checkbox) {
+            checkbox.checked = !isChecked; // Revertir el estado visual del checkbox
+        }
+    }
+}
 
             async function generateCalendar() {
                 await fetchCheckedDates(); // Espera a que se obtengan los datos antes de generar el calendario
