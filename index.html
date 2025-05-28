@@ -177,70 +177,70 @@
 
             let checkedDates = {};
 
-const trainingPlan = {
-    1: { 
-        title: "Lunes - Cuerpo completo (fuerza + cardio)", 
-        plan: `<strong>Calentamiento (5 min):</strong> jumping jacks, movilidad articular.<br><br>
-        <strong>Circuito (3 vueltas, 30 s ON / 20 s OFF):</strong>
-        <ul>
-            <li>Sentadillas</li>
-            <li>Flexiones</li>
-            <li>Remo con banda</li>
-            <li>Plancha</li>
-        </ul>
-        <br><strong>Cardio:</strong> 10 min trote suave o bici.`
-    },
-    2: { 
-        title: "Martes - Tren inferior + core", 
-        plan: `<strong>Calentamiento (5 min):</strong> skipping bajo + rotaciones cadera.<br><br>
-        <strong>Ejercicios (3 series):</strong>
-        <ul>
-            <li>Zancadas</li>
-            <li>Puente de glúteo</li>
-            <li>Core: crunch + elevación piernas</li>
-        </ul>`
-    },
-    3: { 
-        title: "Miércoles - Cardio HIIT suave", 
-        plan: `<strong>Calentamiento (5 min):</strong> movilidad + marcha en el sitio.<br><br>
-        <strong>HIIT (4 vueltas, 30 seg ON / 30 seg OFF):</strong>
-        <ul>
-            <li>Burpees suaves</li>
-            <li>Jumping jacks</li>
-            <li>Mountain climbers</li>
-            <li>Carrera en el sitio</li>
-        </ul>`
-    },
-    4: { 
-        title: "Jueves - Tren superior (fuerza)", 
-        plan: `<strong>Calentamiento (5 min):</strong> movilidad hombros y brazos.<br><br>
-        <strong>Ejercicios (3 series):</strong>
-        <ul>
-            <li>Curl de bíceps</li>
-            <li>Fondos en banco</li>
-            <li>Elevaciones laterales</li>
-            <li>Plancha lateral</li>
-        </ul>`
-    },
-    5: { 
-        title: "Viernes - Circuito cuerpo completo dinámico", 
-        plan: `<strong>Circuito (4 vueltas, 40 seg trabajo/20 seg descanso):</strong>
-        <ul>
-            <li>Sentadilla + press con mancuernas</li>
-            <li>Flexión + remo</li>
-            <li>Skipping rápido</li>
-            <li>Crunch bicicleta</li>
-        </ul>`
-    },
-    6: { 
-        title: "Sábado - Caminata o Bici", 
-        plan: "Caminata rápida o paseo en bici (mínimo 45 min)." 
-    },
-    0: { 
-        title: "Domingo - Descanso o Yoga", 
-        plan: "Descanso o yoga/estiramientos guiados (20-30 min)." 
-    }
-};
+            const trainingPlan = {
+                1: { 
+                    title: "Lunes - Cuerpo completo (fuerza + cardio)", 
+                    plan: `<strong>Calentamiento (5 min):</strong> jumping jacks, movilidad articular.<br><br>
+                    <strong>Circuito (3 vueltas, 30 s ON / 20 s OFF):</strong>
+                    <ul>
+                        <li>Sentadillas</li>
+                        <li>Flexiones</li>
+                        <li>Remo con banda</li>
+                        <li>Plancha</li>
+                    </ul>
+                    <br><strong>Cardio:</strong> 10 min trote suave o bici.`
+                },
+                2: { 
+                    title: "Martes - Tren inferior + core", 
+                    plan: `<strong>Calentamiento (5 min):</strong> skipping bajo + rotaciones cadera.<br><br>
+                    <strong>Ejercicios (3 series):</strong>
+                    <ul>
+                        <li>Zancadas</li>
+                        <li>Puente de glúteo</li>
+                        <li>Core: crunch + elevación piernas</li>
+                    </ul>`
+                },
+                3: { 
+                    title: "Miércoles - Cardio HIIT suave", 
+                    plan: `<strong>Calentamiento (5 min):</strong> movilidad + marcha en el sitio.<br><br>
+                    <strong>HIIT (4 vueltas, 30 seg ON / 30 seg OFF):</strong>
+                    <ul>
+                        <li>Burpees suaves</li>
+                        <li>Jumping jacks</li>
+                        <li>Mountain climbers</li>
+                        <li>Carrera en el sitio</li>
+                    </ul>`
+                },
+                4: { 
+                    title: "Jueves - Tren superior (fuerza)", 
+                    plan: `<strong>Calentamiento (5 min):</strong> movilidad hombros y brazos.<br><br>
+                    <strong>Ejercicios (3 series):</strong>
+                    <ul>
+                        <li>Curl de bíceps</li>
+                        <li>Fondos en banco</li>
+                        <li>Elevaciones laterales</li>
+                        <li>Plancha lateral</li>
+                    </ul>`
+                },
+                5: { 
+                    title: "Viernes - Circuito cuerpo completo dinámico", 
+                    plan: `<strong>Circuito (4 vueltas, 40 seg trabajo/20 seg descanso):</strong>
+                    <ul>
+                        <li>Sentadilla + press con mancuernas</li>
+                        <li>Flexión + remo</li>
+                        <li>Skipping rápido</li>
+                        <li>Crunch bicicleta</li>
+                    </ul>`
+                },
+                6: { 
+                    title: "Sábado - Caminata o Bici", 
+                    plan: "Caminata rápida o paseo en bici (mínimo 45 min)." 
+                },
+                0: { 
+                    title: "Domingo - Descanso o Yoga", 
+                    plan: "Descanso o yoga/estiramientos guiados (20-30 min)." 
+                }
+            };
 
             // Función asíncrona para obtener las fechas marcadas de Google Sheet
             async function fetchCheckedDates() {
