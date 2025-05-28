@@ -74,29 +74,26 @@
             color: #255d28;
         }
         .day .day-number {
-            pointer-events: none; /* Evita que el número intercepte el clic */
-            z-index: 1; /* Asegura que el número esté sobre el checkbox si hay solapamiento */
+            pointer-events: none;
+            z-index: 1;
         }
         .empty-day {
             background: none;
             box-shadow: none;
             cursor: default;
         }
-        /* --- AJUSTE CLAVE AQUÍ --- */
         .day .checkbox {
             position: absolute;
             top: 2px;
             right: 2px;
-            transform: scale(1.2); /* Reducido para no ocupar tanto espacio */
+            transform: scale(1.2);
             margin: 0;
-            z-index: 2; /* El checkbox está "encima" para poder ser pulsado */
-            opacity: 0.8; /* Lo hacemos un poco transparente para que no sea tan pesado visualmente */
+            z-index: 2;
+            opacity: 0.8;
         }
         .day.checked .checkbox {
             opacity: 1;
         }
-        /* --- FIN DEL AJUSTE --- */
-
         .modal {
             display: none;
             position: fixed;
@@ -175,19 +172,19 @@
             const year = 2026;
 
             // --- ¡IMPORTANTE! PEGA AQUÍ LA URL DE TU APLICACIÓN WEB DE APPS SCRIPT ---
-            const APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxUQf5pAjw70JR4uG7yRRExXlQ9TKrf36AtANBFnW4czjJIjbLcmtuWLWu1zT_To55UMw/exec'; // Tu URL
+            const APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxUQf5pAjw70JR4uG7yRRExXlQ9TKrf36AtANBFnW4czjJIjbLcmtuWLWu1zT_To55UMw/exec';
             // -------------------------------------------------------------------------
 
-            let checkedDates = {}; // Aquí almacenaremos los datos de fechas marcadas de Google Sheets
+            let checkedDates = {};
 
             const trainingPlan = {
-                1: { title: "Lunes - Cuerpo completo (fuerza + cardio)", plan: <strong>Calentamiento (5 min):</strong> jumping jacks, movilidad articular.<br><br><strong>Circuito (3 vueltas, 30 seg trabajo/15 seg descanso):</strong><ul><li>Sentadillas con mancuernas</li><li>Flexiones (sobre rodillas si es necesario)</li><li>Remo con mancuernas</li><li>Plancha (30 seg)</li><li>Shadow boxing (sincroniza brazos y piernas, alta intensidad)</li></ul><strong>Estiramientos (5 min)</strong>},
-                2: { title: "Martes - Tren inferior + core", plan: <strong>Calentamiento (5 min):</strong> skipping bajo + rotaciones cadera.<br><br><strong>Ejercicios (3 series):</strong><ul><li>Zancadas con mancuernas (12 x pierna)</li><li>Puente de glúteos (15 rep)</li><li>Sentadilla isométrica (30 seg)</li><li>Crunches (20 rep)</li><li>Plancha lateral (30 seg/lado)</li></ul><strong>Estiramientos (5 min)</strong>},
-                3: { title: "Miércoles - Cardio HIIT suave", plan: <strong>Calentamiento (5 min):</strong> movilidad + marcha en el sitio.<br><br><strong>HIIT (4 vueltas, 30 seg ON / 30 seg OFF):</strong><ul><li>High knees</li><li>Mountain climbers</li><li>Jumping jacks</li><li>Shadow boxing</li></ul><strong>Vuelta a la calma + estiramientos (5-10 min)</strong>},
-                4: { title: "Jueves - Tren superior (fuerza)", plan: <strong>Calentamiento (5 min):</strong> movilidad hombros y brazos.<br><br><strong>Ejercicios (3 series):</strong><ul><li>Curl bíceps con mancuernas (12 rep)</li><li>Press de hombros con mancuernas (12 rep)</li><li>Fondos en silla (10-15 rep)</li><li>Pájaros (deltoides posterior) con mancuernas</li><li>Plancha (40 seg)</li></ul><strong>Estiramientos</strong>},
-                5: { title: "Viernes - Circuito cuerpo completo dinámico", plan: <strong>Circuito (4 vueltas, 40 seg trabajo/20 seg descanso):</strong><ul><li>Sentadilla + press con mancuernas</li><li>Zancadas alternas</li><li>Remo renegado</li><li>Plancha + toque de hombros</li><li>Escalador</li></ul><strong>Estiramientos</strong>},
-                6: { title: "Sábado - Caminata o Bici", plan: "Caminata rápida o paseo en bici (mínimo 45 min)."},
-                0: { title: "Domingo - Descanso o Yoga", plan: "Descanso o yoga/estiramientos guiados (20-30 min)."}
+                1: { title: "Lunes - Cuerpo completo (fuerza + cardio)", plan: `<strong>Calentamiento (5 min):</strong> jumping jacks, movilidad articular.<br><br><strong>Circuito (3 vueltas, 30 s ON / 20 s OFF):</strong><ul><li>Sentadillas</li><li>Flexiones</li><li>Remo con banda</li><li>Plancha</li></ul><br><strong>Cardio:</strong> 10 min trote suave o bici.` },
+                2: { title: "Martes - Tren inferior + core", plan: `<strong>Calentamiento (5 min):</strong> skipping bajo + rotaciones cadera.<br><br><strong>Ejercicios (3 series):</strong><ul><li>Zancadas</li><li>Puente de glúteo</li><li>Core: crunch + elevación piernas</li></ul>` },
+                3: { title: "Miércoles - Cardio HIIT suave", plan: `<strong>Calentamiento (5 min):</strong> movilidad + marcha en el sitio.<br><br><strong>HIIT (4 vueltas, 30 seg ON / 30 seg OFF):</strong><ul><li>Burpees suaves</li><li>Jumping jacks</li><li>Mountain climbers</li><li>Carrera en el sitio</li></ul>` },
+                4: { title: "Jueves - Tren superior (fuerza)", plan: `<strong>Calentamiento (5 min):</strong> movilidad hombros y brazos.<br><br><strong>Ejercicios (3 series):</strong><ul><li>Curl de bíceps</li><li>Fondos en banco</li><li>Elevaciones laterales</li><li>Plancha lateral</li></ul>` },
+                5: { title: "Viernes - Circuito cuerpo completo dinámico", plan: `<strong>Circuito (4 vueltas, 40 seg trabajo/20 seg descanso):</strong><ul><li>Sentadilla + press con mancuernas</li><li>Flexión + remo</li><li>Skipping rápido</li><li>Crunch bicicleta</li></ul>` },
+                6: { title: "Sábado - Caminata o Bici", plan: "Caminata rápida o paseo en bici (mínimo 45 min)." },
+                0: { title: "Domingo - Descanso o Yoga", plan: "Descanso o yoga/estiramientos guiados (20-30 min)." }
             };
 
             // Función asíncrona para obtener las fechas marcadas de Google Sheet
@@ -195,105 +192,85 @@
                 try {
                     const response = await fetch(APPS_SCRIPT_WEB_APP_URL);
                     if (!response.ok) {
-                        throw new Error(Error HTTP! estado: ${response.status});
+                        throw new Error(`Error HTTP! estado: ${response.status}`);
                     }
                     checkedDates = await response.json();
                     console.log('Fechas marcadas obtenidas:', checkedDates);
                 } catch (error) {
                     console.error('Error al obtener las fechas marcadas:', error);
                     alert('No se pudo cargar el progreso. Revisa tu conexión o la configuración del backend.');
-                    checkedDates = {}; // Asegura que sea un objeto vacío si falla la carga
+                    checkedDates = {};
                 }
             }
 
             // Función asíncrona para actualizar una fecha en Google Sheet
             async function updateCheckedDate(dateId, isChecked) {
-    try {
-        const response = await fetch(APPS_SCRIPT_WEB_APP_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'text/plain;charset=utf-8' // <-- ¡CAMBIA ESTO!
-            },
-            body: JSON.stringify({ dateId: dateId, isChecked: isChecked }) // <-- El body sigue siendo JSON stringificado
-        });
-
-        // Si Google Apps Script responde con una redirección (algo común para algunas APIs),
-        // es importante que fetch la siga. Añadir 'redirect: "follow"' puede ser útil,
-        // aunque suele ser el comportamiento por defecto.
-        // Si después de esto sigues con errores, pruebalo:
-        // const response = await fetch(APPS_SCRIPT_WEB_APP_URL, {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'text/plain;charset=utf-8'
-        //     },
-        //     body: JSON.stringify({ dateId: dateId, isChecked: isChecked }),
-        //     redirect: "follow" // <-- OPCIONAL, AÑADIR SI SIGUE FALLANDO
-        // });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(HTTP error! status: ${response.status}, message: ${errorText});
-        }
-        const data = await response.json(); // Tu script sigue enviando JSON como respuesta
-        console.log('Respuesta de Apps Script:', data);
-        return data; // O lo que necesites devolver
-    } catch (error) {
-        console.error('Error al actualizar la fecha marcada:', error);
-        // Aquí puedes añadir lógica para revertir el estado del checkbox si la actualización falla
-        // Por ejemplo, buscar el checkbox y desmarcarlo
-        const checkbox = document.querySelector(.day[data-date-id="${dateId}"] .checkbox);
-        if (checkbox) {
-            checkbox.checked = !isChecked; // Revertir el estado visual del checkbox
-        }
-    }
-}
+                try {
+                    const response = await fetch(APPS_SCRIPT_WEB_APP_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'text/plain;charset=utf-8'
+                        },
+                        body: JSON.stringify({ dateId: dateId, isChecked: isChecked })
+                    });
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+                    }
+                    const data = await response.json();
+                    console.log('Respuesta de Apps Script:', data);
+                    return data;
+                } catch (error) {
+                    console.error('Error al actualizar la fecha marcada:', error);
+                    const checkbox = document.querySelector(`.day[data-date="${dateId}"] .checkbox`);
+                    if (checkbox) {
+                        checkbox.checked = !isChecked;
+                    }
+                }
+            }
 
             async function generateCalendar() {
-                await fetchCheckedDates(); // Espera a que se obtengan los datos antes de generar el calendario
+                await fetchCheckedDates();
 
                 const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
                 let html = '';
                 const today = new Date();
-                // Ajuste para la fecha actual para 2026
-                const todayId = today.getFullYear() === year ? ${year}-${today.getMonth() + 1}-${today.getDate()} : null;
+                const todayId = today.getFullYear() === year ? `${year}-${today.getMonth() + 1}-${today.getDate()}` : null;
 
                 for (let month = 0; month < 12; month++) {
-                    html += <div class="month"><h2>${monthNames[month]} ${year}</h2><div class="calendar">;
+                    html += `<div class="month"><h2>${monthNames[month]} ${year}</h2><div class="calendar">`;
                     const weekDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
-                    weekDays.forEach(day => { html += <div class="day-header">${day}</div>; });
+                    weekDays.forEach(day => { html += `<div class="day-header">${day}</div>`; });
 
                     const daysInMonth = new Date(year, month + 1, 0).getDate();
-                    let firstDay = new Date(year, month, 1).getDay(); // 0 es Domingo, 1 es Lunes...
-                    firstDay = (firstDay === 0) ? 6 : firstDay - 1; // Ajusta para que la semana empiece el Lunes
+                    let firstDay = new Date(year, month, 1).getDay();
+                    firstDay = (firstDay === 0) ? 6 : firstDay - 1;
 
-                    for (let i = 0; i < firstDay; i++) { html += <div class="empty-day"></div>; }
+                    for (let i = 0; i < firstDay; i++) { html += `<div class="empty-day"></div>`; }
 
                     for (let day = 1; day <= daysInMonth; day++) {
                         const date = new Date(year, month, day);
-                        const dayOfWeek = date.getDay(); // 0 para Domingo, 1 para Lunes...
-                        // CORREGIDO: Uso correcto de template literals para dateId
-                        const dateId = ${year}-${month + 1}-${day}; // Formato: 2026-1-15
-                        const isChecked = checkedDates[dateId] || false; // Comprueba si está en los datos obtenidos
+                        const dayOfWeek = date.getDay();
+                        const dateId = `${year}-${month + 1}-${day}`;
+                        const isChecked = checkedDates[dateId] || false;
 
                         let dayClass = 'day';
                         if (isChecked) dayClass += ' checked';
                         if (dateId === todayId) dayClass += ' today';
 
-                        // CORREGIDO: Uso correcto de template literals para el HTML del día
-                        html += 
+                        html += `
                             <div class="${dayClass}" data-date="${dateId}" data-day-of-week="${dayOfWeek}">
                                 <span class="day-number">${day}</span>
                                 <input type="checkbox" class="checkbox" ${isChecked ? 'checked' : ''}>
                             </div>
-                        ;
+                        `;
                     }
-                    html += </div></div>; // Cierra el div.calendar y div.month
+                    html += `</div></div>`;
                 }
                 calendarContainer.innerHTML = html;
             }
 
             function handleDayClick(e) {
-                // Solo abre el modal si se hizo clic directamente en el div del día, no en la casilla de verificación
                 if (e.target.classList.contains('day')) {
                     const dayOfWeek = e.target.dataset.dayOfWeek;
                     const plan = trainingPlan[dayOfWeek];
@@ -305,15 +282,13 @@
 
             function handleCheckboxClick(e) {
                 if (e.target.classList.contains('checkbox')) {
-                    e.stopPropagation(); // Evita que se dispare el evento de clic del día
+                    e.stopPropagation();
                     const dayDiv = e.target.parentElement;
                     const dateId = dayDiv.dataset.date;
                     const isChecked = e.target.checked;
 
-                    // Actualiza la interfaz de usuario inmediatamente (actualización optimista)
                     dayDiv.classList.toggle('checked', isChecked);
 
-                    // Envía la actualización a Google Sheet
                     updateCheckedDate(dateId, isChecked);
                 }
             }
@@ -323,9 +298,8 @@
                 if (e.target == modal) { modal.style.display = 'none'; }
             };
 
-            // Llama a la función asíncrona para iniciar todo
             generateCalendar();
-            
+
             calendarContainer.addEventListener('click', handleDayClick);
             calendarContainer.addEventListener('click', handleCheckboxClick);
         });
