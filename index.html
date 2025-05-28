@@ -175,17 +175,17 @@
             const year = 2026;
 
             // --- ¡IMPORTANTE! PEGA AQUÍ LA URL DE TU APLICACIÓN WEB DE APPS SCRIPT ---
-            const APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxUQf5pAjw70JR4uG7yRRExXlQ9TKrf36AtANBFnW4czjJIjbLcmtuWLWu1zT_To55UMw/exec'; // Tu URL
+            const APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwvcFcOpPwTwUm1KiKRl4r-woDoVlHLwYpL47VPofbycljFPflUWE3zHZIwbJhTZgaYug/exec'; // Tu URL
             // -------------------------------------------------------------------------
 
             let checkedDates = {}; // Aquí almacenaremos los datos de fechas marcadas de Google Sheets
 
             const trainingPlan = {
-                1: { title: "Lunes - Cuerpo completo (fuerza + cardio)", plan: `<strong>Calentamiento (5 min):</strong> jumping jacks, movilidad articular.<br><br><strong>Circuito (3 vueltas, 30 seg trabajo/15 seg descanso):</strong><ul><li>Sentadillas con mancuernas</li><li>Flexiones (sobre rodillas si es necesario)</li><li>Remo con mancuernas</li><li>Plancha (30 seg)</li><li>Shadow boxing (sincroniza brazos y piernas, alta intensidad)</li></ul><strong>Estiramientos (5 min)</strong>`},
-                2: { title: "Martes - Tren inferior + core", plan: `<strong>Calentamiento (5 min):</strong> skipping bajo + rotaciones cadera.<br><br><strong>Ejercicios (3 series):</strong><ul><li>Zancadas con mancuernas (12 x pierna)</li><li>Puente de glúteos (15 rep)</li><li>Sentadilla isométrica (30 seg)</li><li>Crunches (20 rep)</li><li>Plancha lateral (30 seg/lado)</li></ul><strong>Estiramientos (5 min)</strong>`},
-                3: { title: "Miércoles - Cardio HIIT suave", plan: `<strong>Calentamiento (5 min):</strong> movilidad + marcha en el sitio.<br><br><strong>HIIT (4 vueltas, 30 seg ON / 30 seg OFF):</strong><ul><li>High knees</li><li>Mountain climbers</li><li>Jumping jacks</li><li>Shadow boxing</li></ul><strong>Vuelta a la calma + estiramientos (5-10 min)</strong>`},
-                4: { title: "Jueves - Tren superior (fuerza)", plan: `<strong>Calentamiento (5 min):</strong> movilidad hombros y brazos.<br><br><strong>Ejercicios (3 series):</strong><ul><li>Curl bíceps con mancuernas (12 rep)</li><li>Press de hombros con mancuernas (12 rep)</li><li>Fondos en silla (10-15 rep)</li><li>Pájaros (deltoides posterior) con mancuernas</li><li>Plancha (40 seg)</li></ul><strong>Estiramientos</strong>`},
-                5: { title: "Viernes - Circuito cuerpo completo dinámico", plan: `<strong>Circuito (4 vueltas, 40 seg trabajo/20 seg descanso):</strong><ul><li>Sentadilla + press con mancuernas</li><li>Zancadas alternas</li><li>Remo renegado</li><li>Plancha + toque de hombros</li><li>Escalador</li></ul><strong>Estiramientos</strong>`},
+                1: { title: "Lunes - Cuerpo completo (fuerza + cardio)", plan: <strong>Calentamiento (5 min):</strong> jumping jacks, movilidad articular.<br><br><strong>Circuito (3 vueltas, 30 seg trabajo/15 seg descanso):</strong><ul><li>Sentadillas con mancuernas</li><li>Flexiones (sobre rodillas si es necesario)</li><li>Remo con mancuernas</li><li>Plancha (30 seg)</li><li>Shadow boxing (sincroniza brazos y piernas, alta intensidad)</li></ul><strong>Estiramientos (5 min)</strong>},
+                2: { title: "Martes - Tren inferior + core", plan: <strong>Calentamiento (5 min):</strong> skipping bajo + rotaciones cadera.<br><br><strong>Ejercicios (3 series):</strong><ul><li>Zancadas con mancuernas (12 x pierna)</li><li>Puente de glúteos (15 rep)</li><li>Sentadilla isométrica (30 seg)</li><li>Crunches (20 rep)</li><li>Plancha lateral (30 seg/lado)</li></ul><strong>Estiramientos (5 min)</strong>},
+                3: { title: "Miércoles - Cardio HIIT suave", plan: <strong>Calentamiento (5 min):</strong> movilidad + marcha en el sitio.<br><br><strong>HIIT (4 vueltas, 30 seg ON / 30 seg OFF):</strong><ul><li>High knees</li><li>Mountain climbers</li><li>Jumping jacks</li><li>Shadow boxing</li></ul><strong>Vuelta a la calma + estiramientos (5-10 min)</strong>},
+                4: { title: "Jueves - Tren superior (fuerza)", plan: <strong>Calentamiento (5 min):</strong> movilidad hombros y brazos.<br><br><strong>Ejercicios (3 series):</strong><ul><li>Curl bíceps con mancuernas (12 rep)</li><li>Press de hombros con mancuernas (12 rep)</li><li>Fondos en silla (10-15 rep)</li><li>Pájaros (deltoides posterior) con mancuernas</li><li>Plancha (40 seg)</li></ul><strong>Estiramientos</strong>},
+                5: { title: "Viernes - Circuito cuerpo completo dinámico", plan: <strong>Circuito (4 vueltas, 40 seg trabajo/20 seg descanso):</strong><ul><li>Sentadilla + press con mancuernas</li><li>Zancadas alternas</li><li>Remo renegado</li><li>Plancha + toque de hombros</li><li>Escalador</li></ul><strong>Estiramientos</strong>},
                 6: { title: "Sábado - Caminata o Bici", plan: "Caminata rápida o paseo en bici (mínimo 45 min)."},
                 0: { title: "Domingo - Descanso o Yoga", plan: "Descanso o yoga/estiramientos guiados (20-30 min)."}
             };
@@ -195,7 +195,7 @@
                 try {
                     const response = await fetch(APPS_SCRIPT_WEB_APP_URL);
                     if (!response.ok) {
-                        throw new Error(`Error HTTP! estado: ${response.status}`);
+                        throw new Error(Error HTTP! estado: ${response.status});
                     }
                     checkedDates = await response.json();
                     console.log('Fechas marcadas obtenidas:', checkedDates);
@@ -232,7 +232,7 @@
 
         if (!response.ok) {
             const errorText = await response.text();
-            throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+            throw new Error(HTTP error! status: ${response.status}, message: ${errorText});
         }
         const data = await response.json(); // Tu script sigue enviando JSON como respuesta
         console.log('Respuesta de Apps Script:', data);
@@ -241,7 +241,7 @@
         console.error('Error al actualizar la fecha marcada:', error);
         // Aquí puedes añadir lógica para revertir el estado del checkbox si la actualización falla
         // Por ejemplo, buscar el checkbox y desmarcarlo
-        const checkbox = document.querySelector(`.day[data-date-id="${dateId}"] .checkbox`);
+        const checkbox = document.querySelector(.day[data-date-id="${dateId}"] .checkbox);
         if (checkbox) {
             checkbox.checked = !isChecked; // Revertir el estado visual del checkbox
         }
@@ -255,24 +255,24 @@
                 let html = '';
                 const today = new Date();
                 // Ajuste para la fecha actual para 2026
-                const todayId = today.getFullYear() === year ? `${year}-${today.getMonth() + 1}-${today.getDate()}` : null;
+                const todayId = today.getFullYear() === year ? ${year}-${today.getMonth() + 1}-${today.getDate()} : null;
 
                 for (let month = 0; month < 12; month++) {
-                    html += `<div class="month"><h2>${monthNames[month]} ${year}</h2><div class="calendar">`;
+                    html += <div class="month"><h2>${monthNames[month]} ${year}</h2><div class="calendar">;
                     const weekDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
-                    weekDays.forEach(day => { html += `<div class="day-header">${day}</div>`; });
+                    weekDays.forEach(day => { html += <div class="day-header">${day}</div>; });
 
                     const daysInMonth = new Date(year, month + 1, 0).getDate();
                     let firstDay = new Date(year, month, 1).getDay(); // 0 es Domingo, 1 es Lunes...
                     firstDay = (firstDay === 0) ? 6 : firstDay - 1; // Ajusta para que la semana empiece el Lunes
 
-                    for (let i = 0; i < firstDay; i++) { html += `<div class="empty-day"></div>`; }
+                    for (let i = 0; i < firstDay; i++) { html += <div class="empty-day"></div>; }
 
                     for (let day = 1; day <= daysInMonth; day++) {
                         const date = new Date(year, month, day);
                         const dayOfWeek = date.getDay(); // 0 para Domingo, 1 para Lunes...
                         // CORREGIDO: Uso correcto de template literals para dateId
-                        const dateId = `${year}-${month + 1}-${day}`; // Formato: 2026-1-15
+                        const dateId = ${year}-${month + 1}-${day}; // Formato: 2026-1-15
                         const isChecked = checkedDates[dateId] || false; // Comprueba si está en los datos obtenidos
 
                         let dayClass = 'day';
@@ -280,14 +280,14 @@
                         if (dateId === todayId) dayClass += ' today';
 
                         // CORREGIDO: Uso correcto de template literals para el HTML del día
-                        html += `
+                        html += 
                             <div class="${dayClass}" data-date="${dateId}" data-day-of-week="${dayOfWeek}">
                                 <span class="day-number">${day}</span>
                                 <input type="checkbox" class="checkbox" ${isChecked ? 'checked' : ''}>
                             </div>
-                        `;
+                        ;
                     }
-                    html += `</div></div>`; // Cierra el div.calendar y div.month
+                    html += </div></div>; // Cierra el div.calendar y div.month
                 }
                 calendarContainer.innerHTML = html;
             }
